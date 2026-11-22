@@ -33,3 +33,21 @@ This log records how artificial intelligence tools were used throughout the deve
   - Verified cascading deletes (`on delete cascade`) so deleting a subject removes its notes cleanly.
   - Ensured `search_text` and `content jsonb` fields match the project requirements.
   - Verified storage object folder policies to isolate user photo folders.
+
+---
+
+## Milestone 2: Supabase Authentication Flow
+
+- **Date:** 2026-11-21
+- **What was generated:**
+  - Supabase client integration `src/lib/supabase.js`.
+  - Authentication Context and Provider `src/context/AuthContext.jsx`.
+  - Route guard `src/components/ProtectedRoute.jsx`.
+  - Mobile-first responsive login and registration interface `src/pages/Login.jsx`.
+  - Header and Logout component `src/components/Navbar.jsx`.
+  - Authenticated Dashboard placeholder `src/pages/Dashboard.jsx`.
+  - Sprint report `docs/sprints/sprint-2.md`.
+- **What was verified & adapted:**
+  - Sanitized Supabase project URL parsing to handle trailing slashes or endpoint paths.
+  - Enforced 44px minimum touch targets and accessible contrast standards.
+  - Verified compilation and production bundle build with zero errors.

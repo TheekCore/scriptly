@@ -4,6 +4,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import SubjectDetails from "./pages/SubjectDetails.jsx";
 
 export default function App() {
   return (
@@ -13,7 +14,7 @@ export default function App() {
           {/* Public authentication route */}
           <Route path="/login" element={<Login />} />
 
-          {/* Protected routes: only accessible when authenticated */}
+          {/* Protected routes */}
           <Route
             path="/"
             element={
@@ -23,7 +24,16 @@ export default function App() {
             }
           />
 
-          {/* Catch-all redirect to home or login */}
+          <Route
+            path="/subjects/:id"
+            element={
+              <ProtectedRoute>
+                <SubjectDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

@@ -51,3 +51,24 @@ This log records how artificial intelligence tools were used throughout the deve
   - Sanitized Supabase project URL parsing to handle trailing slashes or endpoint paths.
   - Enforced 44px minimum touch targets and accessible contrast standards.
   - Verified compilation and production bundle build with zero errors.
+
+---
+
+## Milestone 3: Subject Management Dashboard
+
+- **Date:** 2026-11-22
+- **What was generated:**
+  - Subject sorting and filtering algorithms in `src/lib/subjectHelpers.js`.
+  - Comprehensive unit test suite in `src/lib/subjectHelpers.test.js` using Vitest.
+  - Interactive `SubjectCard` component with color stripe, favorite star toggle, and delete action.
+  - `AddSubjectModal` with name validation and 8-color picker.
+  - `DeleteConfirmModal` with cascade warning.
+  - Search filter input in `Navbar`.
+  - Upgraded `Dashboard` with live Supabase queries, loading skeleton, and empty states.
+  - Route handler and placeholder for `/subjects/:id` in `SubjectDetails.jsx`.
+  - Sprint report `docs/sprints/sprint-3.md`.
+- **What was verified & adapted:**
+  - Verified sorting logic: favorites stay pinned to the top, then sorted alphabetically.
+  - Verified event propagation isolation so clicking delete or favorite does not navigate into the subject card.
+  - Verified all 8 unit tests pass in Vitest.
+  - Checked mobile responsiveness down to 360px viewport.

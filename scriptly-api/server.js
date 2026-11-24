@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import healthRouter from "./routes/health.js";
+import notesRouter from "./routes/notes.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.json({ limit: "1mb" }));
 
 // Mount routes
 app.use("/api", healthRouter);
+app.use("/api", notesRouter);
 
 // Start listening if run directly (not when imported in unit tests)
 if (process.env.NODE_ENV !== "test") {

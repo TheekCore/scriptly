@@ -72,3 +72,25 @@ This log records how artificial intelligence tools were used throughout the deve
   - Verified event propagation isolation so clicking delete or favorite does not navigate into the subject card.
   - Verified all 8 unit tests pass in Vitest.
   - Checked mobile responsiveness down to 360px viewport.
+
+---
+
+## Milestone 4: Backend AI Endpoint & Rate Limiting
+
+- **Date:** 2026-11-23
+- **What was generated:**
+  - Prompt construction template `scriptly-api/prompts.js`.
+  - Input and JSON shape validator `scriptly-api/utils/validator.js`.
+  - Automatic retry helper with backoff `scriptly-api/utils/retry.js`.
+  - Supabase JWT token verification and RLS client middleware `scriptly-api/middleware/auth.js`.
+  - Multer memory storage upload middleware `scriptly-api/middleware/upload.js`.
+  - Google Gemini SDK caller `scriptly-api/utils/gemini.js` with JSON mode and dynamic `GEMINI_MODEL`.
+  - Complete 7-step API route `POST /api/notes/structure` in `scriptly-api/routes/notes.js`.
+  - Automated Vitest test suite `scriptly-api/tests/backend.test.js` (18 unit tests).
+  - Postman API collection `docs/testing/Scriptly_API.postman_collection.json`.
+  - Sprint report `docs/sprints/sprint-4.md`.
+- **What was verified & adapted:**
+  - Guaranteed `GEMINI_MODEL` is retrieved strictly from environment variables without hardcoded fallbacks.
+  - Verified step-by-step pipeline ordering to avoid executing AI calls before auth and rate limit verification.
+  - Provided `ws` transport option to support Supabase JS on Node.js.
+  - Verified all 18 backend unit tests pass in Vitest.

@@ -1,0 +1,205 @@
+{
+  "info": {
+    "_postman_id": "a9b8c7d6-e5f4-4321-9876-123456789abc",
+    "name": "Scriptly API Test Collection",
+    "description": "Postman collection covering all authentication, validation, daily limit, and AI structuring test cases for the Scriptly backend API (Module TICT3153).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "YOUR_SUPABASE_USER_JWT_TOKEN_HERE",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Health Check (Unauthenticated)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Verifies that the API server is alive. Should return 200 with { ok: true } without requiring any auth headers."
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Structure Note (Valid Token + Valid Input)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "subject",
+              "value": "Software Engineering",
+              "type": "text"
+            },
+            {
+              "key": "text",
+              "value": "SDLC phases: requirements analysis, design, implementation, testing, deployment, maintenance. Agile vs Waterfall.",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/notes/structure",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "notes", "structure"]
+        },
+        "description": "Authorized student sends notes. Should return 200 with structured JSON (title, summary, sections, unclear)."
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Structure Note (Missing / No Auth Token)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "subject",
+              "value": "Software Engineering",
+              "type": "text"
+            },
+            {
+              "key": "text",
+              "value": "Sample notes without bearer token.",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/notes/structure",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "notes", "structure"]
+        },
+        "description": "Request with no Authorization header. Should return 401 Unauthorized."
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Structure Note (Wrong File Type - Disallowed)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "subject",
+              "value": "Software Engineering",
+              "type": "text"
+            },
+            {
+              "key": "files",
+              "type": "file",
+              "src": "sample_document.pdf"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/notes/structure",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "notes", "structure"]
+        },
+        "description": "Uploading non-image files (like PDF or TXT). Should return 400 Bad Input with 'Allowed types: JPG, PNG, WEBP'."
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Structure Note (File Exceeding 8 MB)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "subject",
+              "value": "Software Engineering",
+              "type": "text"
+            },
+            {
+              "key": "files",
+              "type": "file",
+              "src": "large_photo_over_8mb.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/notes/structure",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "notes", "structure"]
+        },
+        "description": "Uploading a file exceeding 8 MB. Should return 400 Bad Input."
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Structure Note (Daily AI Quota Exceeded)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{authToken}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "subject",
+              "value": "Software Engineering",
+              "type": "text"
+            },
+            {
+              "key": "text",
+              "value": "Test 31st request of the day.",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/notes/structure",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "notes", "structure"]
+        },
+        "description": "When a student reaches 30 requests in a single calendar day (tracked via ai_calls table). Should return 429 Too Many Requests with DAILY_LIMIT."
+      },
+      "response": []
+    }
+  ]
+}

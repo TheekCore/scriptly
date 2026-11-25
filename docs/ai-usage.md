@@ -94,3 +94,21 @@ This log records how artificial intelligence tools were used throughout the deve
   - Verified step-by-step pipeline ordering to avoid executing AI calls before auth and rate limit verification.
   - Provided `ws` transport option to support Supabase JS on Node.js.
   - Verified all 18 backend unit tests pass in Vitest.
+
+---
+
+## Milestone 5: Note Upload & AI Structuring Interface
+
+- **Date:** 2026-11-24
+- **What was generated:**
+  - Browser-side HTML5 canvas image resize utility `src/lib/imageResize.js`.
+  - Date formatting and weekday calculations `src/lib/dateHelpers.js`.
+  - Unit tests for image scaling and date formulas `src/lib/helpers.test.js`.
+  - Structured note preview card `src/components/NotePreview.jsx` with AI highlight badges and unclear words alert.
+  - Interactive upload page `src/pages/UploadNote.jsx` with camera/gallery inputs, thumbnail strip, and error retention.
+  - Quick action upload navigation buttons on dashboard and subject views.
+  - Sprint report `docs/sprints/sprint-5.md`.
+- **What was verified & adapted:**
+  - Verified aspect ratio calculations for landscape, portrait, and square photos.
+  - Verified that failed requests keep the user's photos and typed keywords intact.
+  - Verified 16 frontend unit tests and 18 backend unit tests all pass.

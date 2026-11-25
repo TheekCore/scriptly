@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import SubjectDetails from "./pages/SubjectDetails.jsx";
+import UploadNote from "./pages/UploadNote.jsx";
 
 export default function App() {
   return (
@@ -20,6 +21,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/upload"
+            element={
+              <ProtectedRoute>
+                <UploadNote />
               </ProtectedRoute>
             }
           />

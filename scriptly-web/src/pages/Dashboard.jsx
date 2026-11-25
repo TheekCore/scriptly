@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import SubjectCard from "../components/SubjectCard.jsx";
 import AddSubjectModal from "../components/AddSubjectModal.jsx";
@@ -131,15 +132,26 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsAddModalOpen(true)}
-            className="min-h-[44px] px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center space-x-2 self-start sm:self-auto"
-            aria-label="Add new subject"
-          >
-            <span className="text-lg leading-none">+</span>
-            <span>Add Subject</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+            <Link
+              to="/upload"
+              className="min-h-[44px] px-4 py-2.5 rounded-xl text-sm font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 border border-indigo-200 transition-colors flex items-center justify-center space-x-1.5"
+              aria-label="Upload note"
+            >
+              <span>📸</span>
+              <span>Upload Notes</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(true)}
+              className="min-h-[44px] px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center space-x-1.5"
+              aria-label="Add new subject"
+            >
+              <span className="text-base leading-none">+</span>
+              <span>Add Subject</span>
+            </button>
+          </div>
         </div>
 
         {/* Error State with Retry Button */}

@@ -87,8 +87,14 @@ export default function SubjectDetails() {
                 )}
               </div>
 
-              <div className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700">
-                Notes view coming in M6
+              <div className="flex items-center space-x-3">
+                <Link
+                  to={`/upload?subjectId=${subject?.id}`}
+                  className="min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm flex items-center space-x-1.5"
+                >
+                  <span>📷</span>
+                  <span>Upload notes</span>
+                </Link>
               </div>
             </div>
 
@@ -98,9 +104,15 @@ export default function SubjectDetails() {
               <h3 className="text-base font-bold text-gray-900 mb-1">
                 No notes uploaded yet
               </h3>
-              <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                In Milestone 5 & 6, you will be able to take photos of handwritten class notes or enter keywords to generate structured notes under this subject!
+              <p className="text-xs text-gray-500 max-w-sm mx-auto mb-5">
+                Take photos of your handwritten class notes or type keywords. Scriptly will structure them into clean study notes!
               </p>
+              <Link
+                to={`/upload?subjectId=${subject?.id}`}
+                className="inline-flex items-center min-h-[44px] px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-sm"
+              >
+                + Upload first note
+              </Link>
             </div>
           </div>
         )}

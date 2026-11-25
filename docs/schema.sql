@@ -103,6 +103,18 @@ create policy "own" on public.timetable_slots
   with check (auth.uid() = user_id);
 
 -- ==============================================================================
+-- TABLE PRIVILEGES (GRANTS)
+-- Grant authenticated users permission to query and modify tables.
+-- Note: Row Level Security (RLS) policies above ensure each user only accesses their OWN rows.
+-- ==============================================================================
+grant usage on schema public to authenticated, anon;
+grant all on all tables in schema public to authenticated;
+grant all on all sequences in schema public to authenticated;
+
+alter default privileges in schema public grant all on tables to authenticated;
+alter default privileges in schema public grant all on sequences to authenticated;
+
+-- ==============================================================================
 -- AUTOMATIC PROFILE CREATION TRIGGER
 -- Automatically creates a profile record when a new user registers via Supabase Auth
 -- ==============================================================================

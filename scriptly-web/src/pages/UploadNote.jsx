@@ -6,6 +6,8 @@ import { supabase } from "../lib/supabase.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { resizeImage } from "../lib/imageResize.js";
 import { getTodayDateString } from "../lib/dateHelpers.js";
+import { buildSearchText } from "../lib/searchHelpers.js";
+import { uploadNoteImages } from "../lib/storageHelpers.js";
 
 const MAX_IMAGES = 5;
 const MAX_TEXT_LENGTH = 5000;
@@ -24,6 +26,7 @@ export default function UploadNote() {
   const [lectureDate, setLectureDate] = useState(getTodayDateString());
   const [rawText, setRawText] = useState("");
   const [imageFiles, setImageFiles] = useState([]); // Array of { file, previewUrl }
+  const [optimizedFiles, setOptimizedFiles] = useState([]); // Array of resized File objects for storage
   
   // Status states
   const [isLoadingSubjects, setIsLoadingSubjects] = useState(true);
@@ -179,6 +182,7 @@ export default function UploadNote() {
       }
 
       // Step C: Successfully received structured note
+      setOptimizedFiles(resizedFiles);
       setAiNoteResult(responseData);
     } catch (err) {
       console.error("AI Structuring Error:", err);
@@ -190,7 +194,7 @@ export default function UploadNote() {
     }
   };
 
-  // 3. Save Note Handler (Save to Supabase)
+  // 3. Save Note Handler (Save with images to Supabase Storage & DB)
   const handleSaveNote = async () => {
     if (!aiNoteResult) return;
 
@@ -198,20 +202,22 @@ export default function UploadNote() {
       setIsSaving(true);
       setErrorMsg("");
 
-      const selectedSubject = subjects.find((s) => s.id === selectedSubjectId);
       const title = aiNoteResult.title || "Untitled Note";
 
-      // Build search_text: title + summary + headings + points lowercase
-      const headings = (aiNoteResult.sections || []).map((s) => s.heading || "").join(" ");
-      const points = (aiNoteResult.sections || [])
-        .flatMap((s) => (s.points || []).map((p) => p.text || ""))
-        .join(" ");
-      const combinedSearchText = `${title} ${aiNoteResult.summary || ""} ${headings} ${points}`
-        .toLowerCase()
-        .replace(/\s+/g, " ")
-        .trim();
+      // 1. Upload shrunk images to Supabase Storage 'uploads' bucket
+      let uploadedImagePaths = [];
+      if (optimizedFiles && optimizedFiles.length > 0) {
+        uploadedImagePaths = await uploadNoteImages(session?.user?.id, optimizedFiles);
+      }
 
-      // Insert note row into Supabase
+      // 2. Build search_text using the official formula: title + summary + headings + points lowercase
+      const combinedSearchText = buildSearchText(
+        title,
+        aiNoteResult.summary || "",
+        aiNoteResult.sections || []
+      );
+
+      // 3. Insert note row into Supabase
       const { data, error } = await supabase
         .from("notes")
         .insert([
@@ -223,7 +229,7 @@ export default function UploadNote() {
             raw_text: rawText,
             content: aiNoteResult,
             search_text: combinedSearchText,
-            image_paths: [], // Full storage uploads completed in M6
+            image_paths: uploadedImagePaths,
           },
         ])
         .select()
@@ -231,8 +237,8 @@ export default function UploadNote() {
 
       if (error) throw error;
 
-      // Navigate to the subject details page or newly created note
-      navigate(`/subjects/${selectedSubjectId}`);
+      // Navigate to the note view page
+      navigate(`/notes/${data.id}`);
     } catch (saveErr) {
       console.error("Failed to save note:", saveErr);
       setErrorMsg(saveErr.message || "Failed to save note to database.");

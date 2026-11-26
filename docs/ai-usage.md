@@ -112,3 +112,20 @@ This log records how artificial intelligence tools were used throughout the deve
   - Verified aspect ratio calculations for landscape, portrait, and square photos.
   - Verified that failed requests keep the user's photos and typed keywords intact.
   - Verified 16 frontend unit tests and 18 backend unit tests all pass.
+
+---
+
+## Milestone 6: Note Persistence, View & Edit
+
+- **Date:** 2026-11-25
+- **What was generated:**
+  - Supabase Storage helper methods in `src/lib/storageHelpers.js` (upload, delete, signed URLs).
+  - Search text normalization utility `src/lib/searchHelpers.js` and unit tests in `src/lib/searchHelpers.test.js`.
+  - Reusable `NoteCard` component with date and summary snippets `src/components/NoteCard.jsx`.
+  - Chronological note listing and real-time subject search in `src/pages/SubjectDetails.jsx`.
+  - Comprehensive note viewer and inline editor `src/pages/NoteDetails.jsx` with photo lightbox and delete confirm.
+  - Sprint report `docs/sprints/sprint-6.md`.
+- **What was verified & adapted:**
+  - Connected photo storage using private signed URLs to protect sensitive whiteboard photos.
+  - Verified inline editing mode recalculates `search_text` in Supabase upon saving.
+  - Verified 19 frontend unit tests and 18 backend unit tests pass with zero failures.

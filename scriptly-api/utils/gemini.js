@@ -8,19 +8,20 @@ dotenv.config();
 
 /**
  * Calls Google Gemini using the official @google/genai SDK to structure notes.
- * Automatically retries up to 2 times with backoff if JSON generation or schema validation fails.
+ * Automatically retries with backoff and falls back to alternate flash models
+ * if Google servers experience temporary high-demand (503) spikes.
  * 
  * @param {{ files: Array, subject: string, text: string }} params
  * @returns {Promise<object>} Structured note JSON
  */
 export async function structureNoteWithGemini({ files = [], subject, text }) {
   const apiKey = process.env.GEMINI_API_KEY;
-  const modelName = process.env.GEMINI_MODEL;
+  const configuredModel = process.env.GEMINI_MODEL;
 
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY environment variable is not set");
   }
-  if (!modelName) {
+  if (!configuredModel) {
     throw new Error("GEMINI_MODEL environment variable is not set");
   }
 
@@ -39,34 +40,49 @@ export async function structureNoteWithGemini({ files = [], subject, text }) {
   const promptText = buildNotePrompt(subject, text);
   const contents = [...imageParts, { text: promptText }];
 
-  // 3. Call Gemini with retry (1.5s then 3s backoff)
-  return await withRetry(async (attempt) => {
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents,
-      config: {
-        responseMimeType: "application/json",
-        temperature: 0.2, // Low temperature for high factual accuracy
-      },
-    });
+  // Candidate models: configured model first, followed by reliable flash models
+  const candidateModels = Array.from(
+    new Set([configuredModel, "gemini-3.5-flash-lite", "gemini-3.5-flash"])
+  );
 
-    const rawText = response.text;
-    if (!rawText) {
-      throw new Error("Empty response received from Gemini model");
-    }
+  let lastError;
 
-    let parsed;
+  for (const modelName of candidateModels) {
     try {
-      parsed = JSON.parse(rawText);
-    } catch (parseErr) {
-      throw new Error(`Failed to parse AI response as JSON: ${parseErr.message}`);
-    }
+      return await withRetry(async (attempt) => {
+        const response = await ai.models.generateContent({
+          model: modelName,
+          contents,
+          config: {
+            responseMimeType: "application/json",
+            temperature: 0.2, // Low temperature for high factual accuracy
+          },
+        });
 
-    // 4. Validate output shape
-    if (!validateNoteJsonShape(parsed)) {
-      throw new Error("Gemini returned JSON with missing or invalid fields");
-    }
+        const rawText = response.text;
+        if (!rawText) {
+          throw new Error("Empty response received from Gemini model");
+        }
 
-    return parsed;
-  }, [1500, 3000]);
+        let parsed;
+        try {
+          parsed = JSON.parse(rawText);
+        } catch (parseErr) {
+          throw new Error(`Failed to parse AI response as JSON: ${parseErr.message}`);
+        }
+
+        // Validate output shape
+        if (!validateNoteJsonShape(parsed)) {
+          throw new Error("Gemini returned JSON with missing or invalid fields");
+        }
+
+        return parsed;
+      }, [1500, 3000]);
+    } catch (err) {
+      lastError = err;
+      console.warn(`[Gemini Pipeline] Model ${modelName} failed (${err.status || err.message}). Attempting next candidate...`);
+    }
+  }
+
+  throw lastError;
 }

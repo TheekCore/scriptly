@@ -41,3 +41,29 @@ export function buildSearchText(title = "", summary = "", sections = []) {
   // Convert to lowercase and normalize multiple spaces into a single space
   return combined.toLowerCase().replace(/\s+/g, " ").trim();
 }
+
+/**
+ * Filters an array of notes by a keyword query matching against search_text, title, or summary.
+ * 
+ * @param {Array<object>} notes - Array of note objects
+ * @param {string} query - Search term
+ * @returns {Array<object>} - Matching notes
+ */
+export function filterNotesByKeyword(notes = [], query = "") {
+  if (!query || !query.trim()) return notes;
+  const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+
+  return notes.filter((note) => {
+    const targetText = [
+      note.search_text || "",
+      note.title || "",
+      note.content?.summary || "",
+      note.subject?.name || note.subjects?.name || "",
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    // Must match all query words (AND search logic)
+    return terms.every((term) => targetText.includes(term));
+  });
+}

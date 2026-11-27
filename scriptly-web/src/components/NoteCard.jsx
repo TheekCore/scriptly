@@ -2,7 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatDisplayDate } from "../lib/dateHelpers.js";
 
-export default function NoteCard({ note, subjectColor = "#6366f1" }) {
+export default function NoteCard({
+  note,
+  subjectColor = "#6366f1",
+  subjectName,
+}) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -15,6 +19,10 @@ export default function NoteCard({ note, subjectColor = "#6366f1" }) {
     (acc, sec) => acc + (sec.points?.length || 0),
     0
   );
+
+  // Derive subject name and color from joined subjects table or prop
+  const resolvedSubjectName = subjectName || note.subjects?.name || "";
+  const resolvedSubjectColor = note.subjects?.color || subjectColor;
 
   return (
     <div
@@ -33,22 +41,43 @@ export default function NoteCard({ note, subjectColor = "#6366f1" }) {
       {/* Top Color Accent Line */}
       <div
         className="h-1.5 w-full"
-        style={{ backgroundColor: subjectColor }}
+        style={{ backgroundColor: resolvedSubjectColor }}
       />
 
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          {/* Date & Photo Badge */}
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-            <span className="font-medium text-gray-600">
-              📅 {formatDisplayDate(note.lecture_date)}
-            </span>
-            {photoCount > 0 && (
-              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-700">
-                <span>📷</span>
-                <span>{photoCount}</span>
+          {/* Header row: Subject badge (if in global search) & Date & Photo Badge */}
+          <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs text-gray-500 mb-2.5">
+            {resolvedSubjectName ? (
+              <span
+                className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold text-gray-800 bg-gray-100"
+                title={`Subject: ${resolvedSubjectName}`}
+              >
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: resolvedSubjectColor }}
+                />
+                <span className="truncate max-w-[120px]">{resolvedSubjectName}</span>
+              </span>
+            ) : (
+              <span className="font-medium text-gray-600">
+                📅 {formatDisplayDate(note.lecture_date)}
               </span>
             )}
+
+            <div className="flex items-center space-x-2 ml-auto">
+              {resolvedSubjectName && (
+                <span className="text-[11px] text-gray-400">
+                  {formatDisplayDate(note.lecture_date)}
+                </span>
+              )}
+              {photoCount > 0 && (
+                <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-gray-100 text-gray-700">
+                  <span>📷</span>
+                  <span>{photoCount}</span>
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Note Title */}

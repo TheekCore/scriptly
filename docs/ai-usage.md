@@ -129,3 +129,21 @@ This log records how artificial intelligence tools were used throughout the deve
   - Connected photo storage using private signed URLs to protect sensitive whiteboard photos.
   - Verified inline editing mode recalculates `search_text` in Supabase upon saving.
   - Verified 19 frontend unit tests and 18 backend unit tests pass with zero failures.
+
+---
+
+## Milestone 7: Full-Text Keyword Search
+
+- **Date:** 2026-11-26
+- **What was generated:**
+  - Multi-keyword filtering algorithm `filterNotesByKeyword` in `src/lib/searchHelpers.js`.
+  - Expanded unit test suite in `src/lib/searchHelpers.test.js` (24 frontend tests passing).
+  - Responsive "Search notes" toggle in `src/components/Navbar.jsx`.
+  - Global note search pipeline in `src/pages/Dashboard.jsx` querying Supabase `ilike` on `search_text`.
+  - Subject indicator badge support in `src/components/NoteCard.jsx`.
+  - Sprint report `docs/sprints/sprint-7.md`.
+- **What was verified & adapted:**
+  - Verified case-insensitive `ilike` querying on `search_text` column.
+  - Verified that global search results prominently display the corresponding subject name and color.
+  - Tested instant in-subject filtering inside `SubjectDetails.jsx`.
+  - Verified 24 frontend and 18 backend unit tests pass with zero failures.

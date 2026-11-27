@@ -2,7 +2,12 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
-export default function Navbar({ searchQuery, onSearchChange }) {
+export default function Navbar({
+  searchQuery,
+  onSearchChange,
+  isNoteSearch,
+  onToggleNoteSearch,
+}) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -17,7 +22,7 @@ export default function Navbar({ searchQuery, onSearchChange }) {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-xs">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         {/* Brand / Logo */}
         <Link
           to="/"
@@ -30,10 +35,10 @@ export default function Navbar({ searchQuery, onSearchChange }) {
           </span>
         </Link>
 
-        {/* Optional Search Box in Top Bar */}
+        {/* Search Box in Top Bar */}
         {onSearchChange !== undefined && (
-          <div className="flex-1 max-w-md mx-2">
-            <div className="relative">
+          <div className="flex-1 max-w-lg mx-2 flex items-center gap-1.5">
+            <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                 <svg
                   className="w-4 h-4"
@@ -49,21 +54,45 @@ export default function Navbar({ searchQuery, onSearchChange }) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Filter subjects..."
-                className="w-full min-h-[44px] pl-9 pr-9 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
-                aria-label="Filter subjects"
+                placeholder={
+                  isNoteSearch
+                    ? "Search all notes by keyword..."
+                    : "Filter subjects..."
+                }
+                className="w-full min-h-[44px] pl-9 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                aria-label={isNoteSearch ? "Search all notes" : "Filter subjects"}
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => onSearchChange("")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                  aria-label="Clear filter"
+                  className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-gray-400 hover:text-gray-600"
+                  aria-label="Clear search"
                 >
                   ✕
                 </button>
               )}
             </div>
+
+            {/* "Search notes" Toggle Pill */}
+            {onToggleNoteSearch !== undefined && (
+              <button
+                type="button"
+                onClick={onToggleNoteSearch}
+                className={`min-h-[44px] px-3 rounded-xl text-xs font-semibold border transition-all flex items-center space-x-1.5 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                  isNoteSearch
+                    ? "bg-indigo-600 border-indigo-600 text-white shadow-xs"
+                    : "bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-200"
+                }`}
+                title="Toggle note search"
+                aria-pressed={isNoteSearch}
+              >
+                <span>{isNoteSearch ? "📝" : "🔍"}</span>
+                <span className="hidden sm:inline">
+                  {isNoteSearch ? "Notes" : "Search notes"}
+                </span>
+              </button>
+            )}
           </div>
         )}
 

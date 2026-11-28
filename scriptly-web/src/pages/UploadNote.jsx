@@ -157,7 +157,19 @@ export default function UploadNote() {
         formData.append("files", file);
       });
 
-      const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const envUrl = import.meta.env.VITE_API_URL;
+      let backendUrl = envUrl || "http://localhost:3000";
+      // If running locally and accessed from a phone or other device on the LAN,
+      // dynamically use current hostname so mobile devices reach the host machine instead of phone localhost
+      if (
+        typeof window !== "undefined" &&
+        window.location.hostname &&
+        window.location.hostname !== "localhost" &&
+        window.location.hostname !== "127.0.0.1" &&
+        (!envUrl || envUrl.includes("localhost"))
+      ) {
+        backendUrl = `${window.location.protocol}//${window.location.hostname}:3000`;
+      }
       const token = session?.access_token;
 
       if (!token) {

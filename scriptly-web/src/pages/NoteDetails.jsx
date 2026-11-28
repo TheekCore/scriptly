@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase.js";
 import { formatDisplayDate } from "../lib/dateHelpers.js";
 import { buildSearchText } from "../lib/searchHelpers.js";
 import { getNoteSignedImageUrls, deleteNoteImages } from "../lib/storageHelpers.js";
+import { exportNoteToPdf } from "../lib/pdf.js";
 
 export default function NoteDetails() {
   const { id } = useParams();
@@ -298,8 +299,14 @@ export default function NoteDetails() {
 
                     <button
                       type="button"
-                      onClick={() => alert("PDF export will be activated in Milestone 8 with custom jsPDF formatting.")}
-                      className="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 border border-indigo-200 transition flex items-center space-x-1.5"
+                      onClick={() =>
+                        exportNoteToPdf({
+                          note,
+                          subjectName: subject?.name,
+                          subjectColor: subject?.color,
+                        })
+                      }
+                      className="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 border border-indigo-200 transition flex items-center space-x-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       title="Export note as clean PDF"
                     >
                       <span>📄</span>

@@ -147,3 +147,26 @@ This log records how artificial intelligence tools were used throughout the deve
   - Verified that global search results prominently display the corresponding subject name and color.
   - Tested instant in-subject filtering inside `SubjectDetails.jsx`.
   - Verified 24 frontend and 18 backend unit tests pass with zero failures.
+
+---
+
+## Milestone 8: PDF Export & Progressive Web App (PWA) Polish
+
+- **Date:** 2026-11-27
+- **What was generated:**
+  - Client-side academic PDF generator `src/lib/pdf.js` using `jspdf`.
+  - Filename sanitization helper `generatePdfFilename` and unit tests in `src/lib/pdf.test.js`.
+  - Integration of "Export PDF" button in note viewer `src/pages/NoteDetails.jsx`.
+  - Progressive Web App manifest `public/manifest.webmanifest`.
+  - Service worker `public/sw.js` for offline app shell caching.
+  - Service worker registration in `src/main.jsx`.
+  - Mobile meta tags and apple touch icon links in `index.html`.
+  - PWA home screen icon assets `public/icon-192.png` and `public/icon-512.png`.
+  - Sprint report `docs/sprints/sprint-8.md`.
+- **What was verified & adapted:**
+  - Verified that AI-supplemented bullet points are clearly marked with `(AI)` and italicized in exported PDFs.
+  - Verified that unclear handwriting warnings are formatted in an amber warning box.
+  - Verified multi-page documents include running headers and page numbers (`Page X of Y • Module TICT3153`).
+  - Tested 360px mobile viewports to ensure minimum 44px touch targets on buttons.
+  - Verified all 29 frontend tests and 18 backend tests pass (47 tests total).
+
